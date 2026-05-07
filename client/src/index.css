@@ -5,8 +5,6 @@
 /* Import hai font chính theo DESIGN.md */
 @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap');
 
-@import "tailwindcss";
-
 /* ============================================================
    COLOR TOKENS — Palette từ DESIGN.md
    ============================================================ */
@@ -200,3 +198,18 @@ h1, h2 {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* Alias glass-card = card (backward compatibility) */
+.glass-card {
+  background: var(--surface-low);
+  border: 1px solid var(--outline-subtle);
+  border-radius: var(--r-xl);
+  padding: 24px;
+}
+
+/* Spin animation dùng cho LoadingSpinner */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+

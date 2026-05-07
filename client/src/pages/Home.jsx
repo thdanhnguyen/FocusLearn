@@ -45,10 +45,10 @@ export default function Home() {
       {/* Header: Lời chào + Search */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px', flexWrap: 'wrap', gap: '16px' }}>
         <div className="glass-card" style={{ padding: '24px 28px', flex: 1, maxWidth: '460px' }}>
-          <h1 style={{ fontSize: '32px', fontWeight: '700', margin: 0, color: 'var(--color-text)' }}>
+          <h1 style={{ fontSize: '32px', fontWeight: '700', margin: 0, color: 'var(--text)' }}>
             {getGreeting()}, {displayName.split(' ').pop()} 👋
           </h1>
-          <p style={{ color: 'var(--color-muted)', marginTop: '6px', fontSize: '15px', fontStyle: 'italic' }}>
+          <p style={{ color: 'var(--text-muted)', marginTop: '6px', fontSize: '15px', fontStyle: 'italic' }}>
             "Nơi tâm trí tìm thấy sự tĩnh lặng."
           </p>
         </div>
@@ -60,7 +60,7 @@ export default function Home() {
             placeholder="Tìm kiếm tài liệu, phòng học..."
             style={{
               border: 'none', background: 'transparent', outline: 'none',
-              fontSize: '14px', color: 'var(--color-text)', width: '100%',
+              fontSize: '14px', color: 'var(--text)', width: '100%',
               fontFamily: 'Quicksand, sans-serif',
             }}
           />
@@ -73,8 +73,8 @@ export default function Home() {
         {/* Widget Timer nhỏ */}
         <div className="glass-card" style={{ padding: '28px 24px', textAlign: 'center' }}>
           <div style={{
-            display: 'inline-block', background: 'var(--color-primary-light)',
-            color: 'var(--color-primary)', padding: '4px 12px',
+            display: 'inline-block', background: 'var(--primary-container)',
+            color: 'var(--primary)', padding: '4px 12px',
             borderRadius: '99px', fontSize: '12px', fontWeight: '700', marginBottom: '20px'
           }}>
             🎯 Tập trung
@@ -84,7 +84,7 @@ export default function Home() {
           <div style={{ position: 'relative', width: '140px', height: '140px', margin: '0 auto 20px' }}>
             <svg viewBox="0 0 140 140" style={{ position: 'absolute', top: 0, left: 0, transform: 'rotate(-90deg)' }}>
               <circle cx="70" cy="70" r="60" fill="none" stroke="#e8dff5" strokeWidth="8" />
-              <circle cx="70" cy="70" r="60" fill="none" stroke="var(--color-primary)" strokeWidth="8"
+              <circle cx="70" cy="70" r="60" fill="none" stroke="var(--primary)" strokeWidth="8"
                 strokeDasharray={`${2 * Math.PI * 60}`}
                 strokeDashoffset={`${2 * Math.PI * 60 * 0.5}`}
                 strokeLinecap="round"
@@ -93,14 +93,14 @@ export default function Home() {
             <div style={{
               position: 'absolute', inset: 0,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '28px', fontWeight: '700', color: 'var(--color-primary)'
+              fontSize: '28px', fontWeight: '700', color: 'var(--primary)'
             }}>
               25:00
             </div>
           </div>
 
           <div style={{ fontWeight: '700', fontSize: '16px', marginBottom: '4px' }}>Phiên làm việc</div>
-          <div style={{ color: 'var(--color-muted)', fontSize: '13px', marginBottom: '20px' }}>Đã hoàn thành 2/4 phiên</div>
+          <div style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: '20px' }}>Đã hoàn thành 2/4 phiên</div>
 
           <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
             <Link to="/pomodoro" className="btn-primary" style={{ fontSize: '13px', padding: '10px 20px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -108,7 +108,7 @@ export default function Home() {
             </Link>
             <button style={{
               width: '40px', height: '40px', borderRadius: '50%',
-              border: '2px solid var(--color-border)',
+              border: '2px solid var(--outline-subtle)',
               background: 'white', cursor: 'pointer', fontSize: '16px'
             }}>↺</button>
           </div>
@@ -118,9 +118,24 @@ export default function Home() {
         <div className="glass-card" style={{ padding: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
             <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '700' }}>Không gian học tập</h2>
-            <Link to="/study-room" style={{ color: 'var(--color-primary)', fontWeight: '600', fontSize: '13px', textDecoration: 'none' }}>
-              Xem tất cả →
-            </Link>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              <button 
+                className="btn-primary" 
+                style={{ padding: '6px 16px', fontSize: '12px' }}
+                onClick={() => {
+                  const roomName = prompt('Nhập tên không gian học tập mới:');
+                  if (roomName) {
+                    // Tạm thời điều hướng tới một ID ảo, sau này gọi API thật
+                    window.location.href = `/study-room/room-${Date.now()}`;
+                  }
+                }}
+              >
+                + Tạo phòng mới
+              </button>
+              <Link to="/study-room" style={{ color: 'var(--primary)', fontWeight: '600', fontSize: '13px', textDecoration: 'none' }}>
+                Xem tất cả →
+              </Link>
+            </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
@@ -147,16 +162,16 @@ export default function Home() {
                       {room.emoji}
                     </div>
                     <div>
-                      <div style={{ fontWeight: '700', fontSize: '14px', color: 'var(--color-text)' }}>{room.name}</div>
-                      <div style={{ fontSize: '12px', color: 'var(--color-muted)' }}>{room.genre}</div>
+                      <div style={{ fontWeight: '700', fontSize: '14px', color: 'var(--text)' }}>{room.name}</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{room.genre}</div>
                     </div>
                   </div>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <div style={{ fontSize: '12px', color: 'var(--color-muted)', fontWeight: '600' }}>
+                    <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '600' }}>
                       👥 +{room.members}
                     </div>
                     <div style={{
-                      background: 'rgba(255,255,255,0.8)', color: 'var(--color-primary)',
+                      background: 'rgba(255,255,255,0.8)', color: 'var(--primary)',
                       borderRadius: '99px', padding: '3px 10px', fontSize: '12px', fontWeight: '700'
                     }}>
                       🟢 {room.online}
@@ -169,25 +184,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Music Player mini hiển thị bài đang phát */}
-      <div className="glass-card" style={{ padding: '16px 24px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <div style={{ fontSize: '10px', fontWeight: '700', color: 'var(--color-primary)', letterSpacing: '1px' }}>ĐANG PHÁT</div>
-        <div style={{
-          width: '36px', height: '36px', backgroundColor: 'var(--color-primary-light)',
-          borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px'
-        }}>🎧</div>
-        <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: '700', fontSize: '14px' }}>{currentTrack.title}</div>
-          <div style={{ fontSize: '12px', color: 'var(--color-muted)' }}>{currentTrack.artist}</div>
-        </div>
-        <button onClick={togglePlay} style={{
-          width: '38px', height: '38px', borderRadius: '50%',
-          backgroundColor: 'var(--color-primary)', color: 'white',
-          border: 'none', cursor: 'pointer', fontSize: '16px',
-        }}>
-          {isPlaying ? '⏸' : '▶'}
-        </button>
-      </div>
     </div>
   );
 }

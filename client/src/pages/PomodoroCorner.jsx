@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import { useMusicPlayer } from '../components/MusicPlayer';
 
 const MODES = {
-  WORK:  { label: 'DEEP WORK',  duration: 25 * 60, color: 'var(--color-primary)' },
-  SHORT: { label: 'NGHỈ NGẮN', duration: 5  * 60, color: 'var(--color-green)' },
+  WORK:  { label: 'DEEP WORK',  duration: 25 * 60, color: 'var(--primary)' },
+  SHORT: { label: 'NGHỈ NGẮN', duration: 5  * 60, color: 'var(--secondary)' },
   LONG:  { label: 'NGHỈ DÀI',  duration: 15 * 60, color: '#e07a5f' },
 };
 
@@ -16,8 +16,8 @@ const QUOTES = [
 
 const ctrlBtn = {
   width: '50px', height: '50px', borderRadius: '50%',
-  border: 'none', background: 'var(--color-primary-light)',
-  color: 'var(--color-primary)', cursor: 'pointer',
+  border: 'none', background: 'var(--primary-container)',
+  color: 'var(--primary)', cursor: 'pointer',
   fontSize: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center',
   transition: 'all 0.15s',
 };
@@ -75,7 +75,7 @@ export default function PomodoroCorner() {
     }} className="fade-in">
 
       {/* Quote */}
-      <p style={{ fontStyle: 'italic', color: 'var(--color-muted)', fontSize: '15px', marginBottom: '32px', textAlign: 'center', maxWidth: '480px' }}>
+      <p style={{ fontStyle: 'italic', color: 'var(--text-muted)', fontSize: '15px', marginBottom: '32px', textAlign: 'center', maxWidth: '480px' }}>
         {quote}
       </p>
 
@@ -85,8 +85,8 @@ export default function PomodoroCorner() {
           <button key={key} onClick={() => switchMode(key)} style={{
             padding: '8px 20px', borderRadius: '99px', border: 'none', cursor: 'pointer',
             fontSize: '13px', fontWeight: '700',
-            background: mode === key ? 'var(--color-primary)' : 'var(--color-primary-light)',
-            color: mode === key ? 'white' : 'var(--color-primary)',
+            background: mode === key ? 'var(--primary)' : 'var(--primary-container)',
+            color: mode === key ? 'white' : 'var(--primary)',
             transition: 'all 0.2s',
           }}>
             {val.label}
@@ -115,7 +115,7 @@ export default function PomodoroCorner() {
           <div style={{ fontSize: '72px', fontWeight: '700', color: MODES[mode].color, lineHeight: 1, letterSpacing: '-2px' }}>
             {formatTime(timeLeft)}
           </div>
-          <div style={{ color: 'var(--color-muted)', fontSize: '14px', marginTop: '8px' }}>
+          <div style={{ color: 'var(--text-muted)', fontSize: '14px', marginTop: '8px' }}>
             Phiên {session} / 4
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function PomodoroCorner() {
         <button onClick={reset} style={ctrlBtn}>↺</button>
         <button onClick={() => setRunning(r => !r)} style={{
           ...ctrlBtn, width: '64px', height: '64px', fontSize: '26px',
-          background: 'var(--color-primary)', color: 'white',
+          background: 'var(--primary)', color: 'white',
           boxShadow: '0 8px 28px rgba(107,79,160,0.35)',
         }}>
           {running ? '⏸' : '▶'}
@@ -139,7 +139,7 @@ export default function PomodoroCorner() {
         {[1, 2, 3, 4].map(n => (
           <div key={n} style={{
             width: '10px', height: '10px', borderRadius: '50%',
-            background: n < session ? 'var(--color-primary)' : 'var(--color-primary-light)',
+            background: n < session ? 'var(--primary)' : 'var(--primary-container)',
             transition: 'background 0.3s',
           }} />
         ))}
@@ -148,8 +148,8 @@ export default function PomodoroCorner() {
       {/* Nút phát nhạc */}
       <button onClick={togglePlay} style={{
         marginTop: '24px', display: 'flex', alignItems: 'center', gap: '8px',
-        border: 'none', background: 'var(--color-primary-light)',
-        color: 'var(--color-primary)', padding: '10px 20px',
+        border: 'none', background: 'var(--primary-container)',
+        color: 'var(--primary)', padding: '10px 20px',
         borderRadius: '99px', cursor: 'pointer', fontWeight: '700', fontSize: '13px',
         fontFamily: 'Quicksand, sans-serif',
       }}>

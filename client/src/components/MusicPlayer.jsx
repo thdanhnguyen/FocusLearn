@@ -116,87 +116,164 @@ export const MusicProvider = ({ children }) => {
 };
 
 // ====================================================
-// UI của thanh Music Player ở dưới cùng trang
+// UI của thanh Music Player (Floating Widget)
 // ====================================================
 export default function MusicPlayer() {
-  const { currentTrack, isPlaying, volume, togglePlay, nextTrack, prevTrack, handleVolumeChange } = useMusicPlayer();
+  const { currentTrack, isPlaying, volume, togglePlay, nextTrack, prevTrack, handleVolumeChange, changeTrack } = useMusicPlayer();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [customUrl, setCustomUrl] = useState('');
+  const [activeSpotifyUrl, setActiveSpotifyUrl] = useState(null);
+
+  // Hàm trích xuất ID YouTube từ link dán vào
+  const extractYouTubeID = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
+  const handlePlayCustom = (e) => {
+    e.preventDefault();
+    if (!customUrl) return;
+
+    if (customUrl.includes('spotify.com')) {
+      setActiveSpotifyUrl(customUrl);
+      setCustomUrl(''); // Xóa ô input
+      return;
+    }
+
+    const ytID = extractYouTubeID(customUrl);
+    if (ytID) {
+      changeTrack({ id: ytID, title: 'Custom YouTube Link', artist: 'Nghe theo sở thích' });
+      setActiveSpotifyUrl(null); // Tắt Spotify nếu có
+      setCustomUrl('');
+    } else {
+      alert('Vui lòng dán link YouTube hoặc Spotify hợp lệ!');
+    }
+  };
 
   return (
     <div style={{
       position: 'fixed',
-      bottom: 0,
-      left: '200px', // Cách sidebar ra
-      right: 0,
-      backgroundColor: 'rgba(255, 245, 251, 0.92)',
-      backdropFilter: 'blur(20px)',
-      borderTop: '1px solid var(--color-border)',
-      padding: '12px 28px',
+      bottom: '24px',
+      right: '24px',
+      backgroundColor: 'rgba(255, 248, 245, 0.85)',
+      backdropFilter: 'blur(16px)',
+      border: '1px solid var(--outline-subtle)',
+      borderRadius: 'var(--r-xl)',
+      padding: '16px',
       display: 'flex',
-      alignItems: 'center',
-      gap: '16px',
+      flexDirection: 'column',
+      gap: '12px',
       zIndex: 40,
+      width: isExpanded ? '320px' : '260px',
+      boxShadow: '0 8px 32px rgba(106, 86, 130, 0.08)',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      fontFamily: "'Be Vietnam Pro', sans-serif"
     }}>
-      {/* Album Art giả */}
-      <div style={{
-        width: '44px', height: '44px',
-        backgroundColor: 'var(--color-primary-light)',
-        borderRadius: '10px',
+      
+      {/* Nút thu gọn / mở rộng */}
+      <button onClick={() => setIsExpanded(!isExpanded)} style={{
+        position: 'absolute', top: '-10px', right: '-10px',
+        width: '24px', height: '24px', borderRadius: '50%',
+        background: 'var(--primary)', color: 'white', border: 'none',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: '20px',
-        flexShrink: 0,
+        cursor: 'pointer', fontSize: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
       }}>
-        🎵
-      </div>
+        {isExpanded ? '⤡' : '⤢'}
+      </button>
 
-      {/* Tên bài */}
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontSize: '14px', fontWeight: '700', color: 'var(--color-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-          {currentTrack.title}
+      {/* Main Row */}
+      {activeSpotifyUrl ? (
+        <div style={{ animation: 'fadeIn 0.2s', width: '100%', height: '80px' }}>
+          <iframe 
+            style={{ borderRadius: '12px' }} 
+            src={activeSpotifyUrl.replace('open.spotify.com', 'open.spotify.com/embed')} 
+            width="100%" 
+            height="80" 
+            frameBorder="0" 
+            allowFullScreen="" 
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+            loading="lazy"
+          ></iframe>
         </div>
-        <div style={{ fontSize: '12px', color: 'var(--color-muted)' }}>
-          {currentTrack.artist}
+      ) : (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <div style={{
+            width: '40px', height: '40px',
+            backgroundColor: 'var(--primary-container)',
+            color: 'var(--on-primary-container)',
+            borderRadius: '10px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '18px', flexShrink: 0,
+          }}>
+            🎵
+          </div>
+
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {currentTrack.title}
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+              {currentTrack.artist}
+            </div>
+          </div>
+
+          {/* Play Controls */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <button onClick={prevTrack} style={btnStyle}>⏮</button>
+            <button onClick={togglePlay} style={{
+              ...btnStyle,
+              backgroundColor: 'var(--primary)',
+              color: 'white',
+              width: '34px', height: '34px',
+              fontSize: '14px',
+            }}>
+              {isPlaying ? '⏸' : '▶'}
+            </button>
+            <button onClick={nextTrack} style={btnStyle}>⏭</button>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* Nút điều khiển */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <button onClick={prevTrack} style={btnStyle}>⏮</button>
-        <button onClick={togglePlay} style={{
-          ...btnStyle,
-          backgroundColor: 'var(--color-primary)',
-          color: 'white',
-          width: '38px', height: '38px',
-          fontSize: '16px',
-        }}>
-          {isPlaying ? '⏸' : '▶'}
-        </button>
-        <button onClick={nextTrack} style={btnStyle}>⏭</button>
-      </div>
+      {/* Extended Area (Volume & Custom Link) */}
+      {isExpanded && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '4px', animation: 'fadeIn 0.2s' }}>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '12px' }}>🔉</span>
+            <input
+              type="range" min="0" max="100" value={volume}
+              onChange={(e) => handleVolumeChange(Number(e.target.value))}
+              style={{ flex: 1, accentColor: 'var(--primary)' }}
+            />
+          </div>
 
-      {/* Volume slider */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: '120px' }}>
-        <span style={{ fontSize: '14px' }}>🔉</span>
-        <input
-          type="range"
-          min="0" max="100"
-          value={volume}
-          onChange={(e) => handleVolumeChange(Number(e.target.value))}
-          style={{ flex: 1, accentColor: 'var(--color-primary)' }}
-        />
-      </div>
+          <form onSubmit={handlePlayCustom} style={{ display: 'flex', gap: '8px' }}>
+            <input 
+              type="text" 
+              placeholder="Dán link YouTube hoặc Spotify..." 
+              value={customUrl}
+              onChange={e => setCustomUrl(e.target.value)}
+              className="input"
+              style={{ padding: '6px 10px', fontSize: '12px' }}
+            />
+            <button type="submit" className="btn-primary" style={{ padding: '6px 12px', fontSize: '12px' }}>
+              Phát
+            </button>
+          </form>
+        </div>
+      )}
     </div>
   );
 }
 
 const btnStyle = {
-  width: '32px', height: '32px',
-  borderRadius: '50%',
-  border: 'none',
-  backgroundColor: 'var(--color-primary-light)',
-  color: 'var(--color-primary)',
+  width: '28px', height: '28px',
+  borderRadius: '50%', border: 'none',
+  backgroundColor: 'var(--surface-high)',
+  color: 'var(--primary)',
   cursor: 'pointer',
   display: 'flex', alignItems: 'center', justifyContent: 'center',
-  fontSize: '13px',
-  fontWeight: '700',
+  fontSize: '12px', fontWeight: '700',
   transition: 'all 0.15s ease',
 };
